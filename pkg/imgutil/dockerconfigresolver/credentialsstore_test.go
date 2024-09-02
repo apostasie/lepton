@@ -21,7 +21,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"runtime"
 	"testing"
 
 	"gotest.tools/v3/assert"
@@ -40,14 +39,8 @@ func createTempDir(t *testing.T, mode os.FileMode) string {
 }
 
 func TestBrokenCredentialsStore(t *testing.T) {
-	if runtime.GOOS == "freebsd" {
-		// It is unclear why these tests are failing on FreeBSD, and if it is a problem with Vagrant or differences
-		// with FreeBSD
-		// Anyhow, this test is about extreme cases & conditions (filesystem errors wrt credentials loading).
-		t.Skip("skipping broken credential store tests for freebsd")
-	}
 	if runtime.GOOS == "windows" {
-		// Same as above
+		// Unclear why this is failing on Windows
 		t.Skip("test is not compatible with windows")
 	}
 
