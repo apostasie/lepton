@@ -22,6 +22,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/containerd/nerdctl/v2/pkg/version"
 	"io"
 	"os"
 	"path/filepath"
@@ -39,12 +40,15 @@ import (
 )
 
 const (
+	LogPath = "log-path"
+	MaxSize = "max-size"
+	MaxFile = "max-file"
+	Tag     = "tag"
+)
+
+var (
 	// MagicArgv1 is the magic argv1 for the containerd runtime v2 logging plugin mode.
-	MagicArgv1 = "_NERDCTL_INTERNAL_LOGGING"
-	LogPath    = "log-path"
-	MaxSize    = "max-size"
-	MaxFile    = "max-file"
-	Tag        = "tag"
+	MagicArgv1 = fmt.Sprintf("_%s_INTERNAL_LOGGING", version.EnvPrefix)
 )
 
 type Driver interface {

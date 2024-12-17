@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/containerd/nerdctl/v2/pkg/version"
 	"io"
 	"net"
 	"os"
@@ -48,7 +49,7 @@ import (
 	"github.com/containerd/nerdctl/v2/pkg/store"
 )
 
-const (
+var (
 	// NetworkNamespace is the network namespace path to be passed to the CNI plugins.
 	// When this annotation is set from the runtime spec.State payload, it takes
 	// precedence over the PID based resolution (/proc/<pid>/ns/net) where pid is
@@ -451,7 +452,7 @@ func applyNetworkSettings(opts *handlerOpts) error {
 		cni.WithLabels(map[string]string{
 			"IgnoreUnknown": "1",
 		}),
-		cni.WithArgs("NERDCTL_CNI_DHCP_HOSTNAME", opts.state.Annotations[labels.Hostname]),
+		cni.WithArgs(version.EnvPrefix+"_CNI_DHCP_HOSTNAME", opts.state.Annotations[labels.Hostname]),
 	)
 	hsMeta := hostsstore.Meta{
 		ID:         opts.state.ID,

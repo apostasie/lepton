@@ -28,7 +28,7 @@ const (
 )
 
 func DataRoot() string {
-	return filepath.Join(os.Getenv("ProgramData"), "nerdctl")
+	return filepath.Join(os.Getenv("ProgramData"), version.RootName)
 }
 
 func CNIPath() string {
@@ -60,7 +60,7 @@ func CliTOML() string {
 	if err != nil {
 		panic(err)
 	}
-	return filepath.Join(ucd, "nerdctl\\nerdctl.toml")
+	return filepath.Join(ucd, version.RootName, version.RootName+".toml")
 }
 
 func HostsDirs() []string {

@@ -22,6 +22,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/containerd/nerdctl/v2/pkg/version"
 	"net"
 	"os"
 	"os/exec"
@@ -276,9 +277,9 @@ func (e *CNIEnv) filterNetworks(filterf func(*NetworkConfig) bool) ([]*NetworkCo
 
 func (e *CNIEnv) getConfigPathForNetworkName(netName string) string {
 	if netName == DefaultNetworkName || e.Namespace == "" {
-		return filepath.Join(e.NetconfPath, "nerdctl-"+netName+".conflist")
+		return filepath.Join(e.NetconfPath, version.RootName+"-"+netName+".conflist")
 	}
-	return filepath.Join(e.NetconfPath, e.Namespace, "nerdctl-"+netName+".conflist")
+	return filepath.Join(e.NetconfPath, e.Namespace, version.RootName+"-"+netName+".conflist")
 }
 
 func (e *CNIEnv) usedSubnets() ([]*net.IPNet, error) {
