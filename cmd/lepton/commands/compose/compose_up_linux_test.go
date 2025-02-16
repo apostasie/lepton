@@ -611,7 +611,8 @@ services:
 }
 
 func TestComposeUpPull(t *testing.T) {
-	t.Parallel()
+	// This test is removing the common image
+	// t.Parallel()
 
 	base := testutil.NewBase(t)
 

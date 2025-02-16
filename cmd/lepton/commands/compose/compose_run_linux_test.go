@@ -33,7 +33,6 @@ import (
 	"go.farcloser.world/lepton/pkg/testutil/nerdtest"
 	"go.farcloser.world/lepton/pkg/testutil/nerdtest/registry"
 	"go.farcloser.world/lepton/pkg/testutil/nettestutil"
-	"go.farcloser.world/lepton/pkg/testutil/various"
 )
 
 func TestComposeRun(t *testing.T) {
@@ -69,7 +68,8 @@ services:
 }
 
 func TestComposeRunWithRM(t *testing.T) {
-	t.Parallel()
+	// Test does not make sense. Image may or may not be there.
+	// t.Parallel()
 
 	base := testutil.NewBase(t)
 	// specify the name of container in order to remove
@@ -476,10 +476,7 @@ func TestComposePushAndPullWithCosignVerify(t *testing.T) {
 		base := testutil.NewBase(t)
 		base.Env = append(base.Env, "COSIGN_PASSWORD=1")
 
-		keyPair := various.NewCosignKeyPair(t, "cosign-key-pair", "1")
-		t.Cleanup(func() {
-			keyPair.Cleanup()
-		})
+		keyPair := nerdtest.NewCosignKeyPair(data, helpers)
 
 		tID := testutil.Identifier(t)
 		testImageRefPrefix := fmt.Sprintf("127.0.0.1:%d/%s/", reg.Port, tID)

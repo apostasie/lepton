@@ -60,7 +60,8 @@ services:
 
 // https://github.com/containerd/nerdctl/issues/1652
 func TestComposeUpBindCreateHostPath(t *testing.T) {
-	t.Parallel()
+	// Image may not be there
+	// t.Parallel()
 
 	if runtime.GOOS == "windows" {
 		t.Skip(`FIXME: no support for Windows path: (error: "volume target must be an absolute path, got \"/mnt\")`)

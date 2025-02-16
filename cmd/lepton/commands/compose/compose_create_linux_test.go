@@ -79,7 +79,8 @@ services:
 }
 
 func TestComposeCreatePull(t *testing.T) {
-	t.Parallel()
+	// Cannot be parallelized as-is
+	// t.Parallel()
 
 	base := testutil.NewBase(t)
 	var dockerComposeYAML = fmt.Sprintf(`
