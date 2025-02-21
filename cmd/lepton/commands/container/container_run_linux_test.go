@@ -489,6 +489,7 @@ func TestRunWithDetachKeys(t *testing.T) {
 			// if !nerdtest.IsDocker() {
 			nerdtest.EnsureContainerStarted(helpers, data.Identifier())
 			// }
+			// ctrl+a and ctrl+b (see https://en.wikipedia.org/wiki/C0_and_C1_control_codes)
 			_, err := f.Write([]byte{1, 2})
 			return err
 		})
@@ -556,6 +557,7 @@ func TestIssue3568(t *testing.T) {
 			// if !nerdtest.IsDocker() {
 			nerdtest.EnsureContainerStarted(helpers, data.Identifier())
 			// }
+			// ctrl+a and ctrl+b (see https://en.wikipedia.org/wiki/C0_and_C1_control_codes)
 			_, err := f.Write([]byte{1, 2})
 			return err
 		})
