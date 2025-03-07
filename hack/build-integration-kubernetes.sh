@@ -21,7 +21,7 @@ readonly root
 # shellcheck source=/dev/null
 . "$root/scripts/lib.sh"
 
-GO_VERSION=1.23
+GO_VERSION=1.24
 KIND_VERSION=v0.24.0
 CNI_PLUGINS_VERSION=v1.5.1
 
@@ -50,7 +50,8 @@ install::kubectl(){
   local temp
   temp="$(fs::mktemp "install")"
 
-  http::get "$temp"/kubectl "https://storage.googleapis.com/kubernetes-release/release/$version/bin/linux/${GOARCH:-amd64}/kubectl"
+  http::get "$temp"/kubectl "https://dl.k8s.io/release/$version/bin/linux/${GOARCH:-amd64}/kubectl"
+
   host::install "$temp"/kubectl
 }
 
@@ -96,8 +97,8 @@ main(){
 
   # Build cli to use for kind
   make binaries
-  PATH="$(pwd)"/_output:"$PATH"
   ln -s "$(pwd)"/_output/lepton "$(pwd)"/_output/nerdctl
+  PATH=$(pwd)/_output:"$PATH"
   export PATH
 
   # Add CNI plugins
@@ -105,6 +106,7 @@ main(){
 
   # Hack to get go into kind control plane
   exec::cli rm -f go-kind 2>/dev/null || true
+  # FIXME: 429. Get rid of this and use straight golang install instead
   exec::cli run -d --quiet --name go-kind golang:"$GO_VERSION" sleep Inf
   exec::cli cp go-kind:/usr/local/go /tmp/go
   exec::cli rm -f go-kind

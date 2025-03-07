@@ -1,0 +1,52 @@
+name: unit
+
+on:
+  push:
+    branches:
+      - main
+      - 'release/**'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+env:
+  SHORT_TIMEOUT: 5
+  LONG_TIMEOUT: 60
+
+jobs:
+  test-unit:
+    # FIXME:
+    # Supposed to work: https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/evaluate-expressions-in-workflows-and-actions#example-returning-a-json-data-type
+    # Apparently does not
+    # timeout-minutes: ${{ fromJSON(env.SHORT_TIMEOUT) }}
+    timeout-minutes: 10
+    name: ${{ matrix.os }} | ${{ matrix.go }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      matrix:
+        include:
+          - os: windows-2025
+            go: canary
+          - os: ubuntu-24.04
+            go: canary
+          - os: windows-2022
+            go: stable
+          - os: ubuntu-24.04
+            go: stable
+    steps:
+      - name: "Clone"
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      - name: "Install go"
+        uses: ./.github/actions/install-go
+        with:
+          version: ${{ matrix.go }}
+      - name: "Install dev-tools"
+        uses: ./.github/actions/install-dev-tools
+      - if: ${{ contains(matrix.os, 'windows') }}
+        name: "Setup CNI"
+        run: GOPATH=$(go env GOPATH) ./hack/provisioning/windows/cni.sh
+      - name: "Run unit tests"
+        run: make test-unit

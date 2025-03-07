@@ -8,43 +8,35 @@ on:
   pull_request:
 
 jobs:
-  lint:
+  go-current:
+    name: "go stable"
     timeout-minutes: 5
-    name: "${{ matrix.goos }} | ${{ matrix.goversion }}"
-    runs-on: "${{ matrix.os }}"
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-24.04
-            goos: linux
-            goversion: latest-stable
-          - os: ubuntu-24.04
-            goos: windows
-            goversion: latest-stable
-          - os: ubuntu-24.04
-            goos: linux
-            goversion: canary
+    uses: ./.github/action/node
+    with:
+      depth: 100
+    steps:
+      - name: lint
+        run: |
+          export LINT_COMMIT_RANGE="$(jq -r '.after + "..HEAD"' ${GITHUB_EVENT_PATH})"
+          make lint
+
+  go-canary:
+    timeout-minutes: 5
+    name: "go canary"
+    runs-on: ubuntu-24.04
     steps:
       - name: "Checkout project, 100 commits"
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
         with:
           fetch-depth: 100
-      - name: "Install golang"
+      - name: "Install go"
         uses: ./.github/actions/install-go
         with:
-          strategy: ${{ matrix.goversion }}
-      - name: "Install linters"
-        run: |
-          echo "::group:: make install-dev-tools"
-          make install-dev-tools
-          echo "::endgroup::"
-      - name: "`make lint`"
-        env:
-          VERBOSE: true
-          GOOS: ${{ matrix.goos }}
+          version: canary
+      - name: "Install dev-tools"
+        uses: ./.github/actions/install-dev-tools
+
+      - name: lint
         run: |
           export LINT_COMMIT_RANGE="$(jq -r '.after + "..HEAD"' ${GITHUB_EVENT_PATH})"
           make lint
